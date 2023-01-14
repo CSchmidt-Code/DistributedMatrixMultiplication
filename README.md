@@ -3,10 +3,10 @@ Distributed system of docker containers, that uses several workers supervised by
 
 # Author: Christoph Schmidt
 
-
 1. make all - generates docker images and thrift files
 2. docker-compose up - starts controller, database, all the workers and the MQTT broker
 
+# Settings:
 All settings like changing the number of workers can be done in the hidden .env file:
 NUMBERWORKERS: Number of workers
 MATRIX_A_ROWS: Number of rows of matrix A
@@ -18,7 +18,7 @@ MAX_CHUNK_SIZE: The maximum size of matrix chunks that get send to a worker for 
 
 
 
-Documentation:
+# Documentation:
 The controller creates one or multiple pairs of matrices to be multiplied by multiple workers.
 At the beginning the controller divides these matrices into tasks, that get later executed by the workers.
 
