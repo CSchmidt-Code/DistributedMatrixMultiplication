@@ -18,8 +18,8 @@ using namespace std;
 
 // DEBUGGING
 #define PROGR_TIMEOUT 120000 // Milliseconds after which the program terminates
-//#define DEBUG_LAMPORT       // If defined lamport debug messages will be output
-//#define DEBUG_MUTEX         // If defined mutex debug messages will be output
+//#define DEBUG_LAMPORT       // If defined lamport debug messages will be outputted
+//#define DEBUG_MUTEX         // If defined mutex debug messages will be outputted
 chrono::steady_clock::time_point program_start_time;
 
 #define BUFLEN 4
