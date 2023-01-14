@@ -1,0 +1,74 @@
+
+
+services:
+  controller:  
+    image: "vs_p_controller:1.0.0"
+    networks:
+      TASK_NETWORK:
+        ipv4_address: 173.20.0.6
+    container_name: "vs_p_controller"
+    environment:
+      - NUMBERWORKERS=${NUMBERWORKERS}
+      - MATRIX_A_ROWS=${MATRIX_A_ROWS}
+      - MATRIX_A_COLS=${MATRIX_A_COLS}
+      - MATRIX_B_COLS=${MATRIX_B_COLS}
+      - NUMBER_MATRICES=${NUMBER_MATRICES}
+      - MAX_CHUNK_SIZE=${MAX_CHUNK_SIZE}
+
+
+  worker:
+    image: "vs_p_worker:1.0.0"
+    deploy:
+      mode: replicated
+      replicas: "${NUMBERWORKERS}"
+      endpoint_mode: vip
+    networks:
+      TASK_NETWORK:
+      DATABASE_NETWORK:
+      MQTT_NETWORK:
+    environment:
+      - NUMBERWORKERS=${NUMBERWORKERS}
+    depends_on:
+      - controller 
+      - database
+
+  database:
+    image: "vs_p_database:1.0.0"
+    ports:
+      - "8081:80"
+    networks:
+      DATABASE_NETWORK:
+        ipv4_address: 173.30.0.8
+    container_name: "vs_p_database"
+
+  mqttbroker:
+    image: "mqtt_broker:1"
+    networks:
+      MQTT_NETWORK:
+        ipv4_address: 173.40.0.10
+    container_name: "mqtt_broker"
+    stop_grace_period: 30s
+
+
+networks:
+# Used for RPCs
+  TASK_NETWORK:
+    name: task_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 173.20.0.0/24
+# Communication between database and workers
+  DATABASE_NETWORK:
+    name: database_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 173.30.0.0/24
+# Communication between workers
+  MQTT_NETWORK:
+    name: mqtt_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 173.40.0.0/24
